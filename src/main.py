@@ -39,7 +39,4 @@ async def on_message(message):
     if str.lower(message.content) != "bbw?":
         await message.channel.send(getRandomResponse())
 
-bot.run('TOKEN')
-
-
 bot.run(TOKEN)
