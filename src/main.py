@@ -71,7 +71,7 @@ async def update_minecraft_server_status(message):
         embed.add_field(name="Players", value=f"{online_players}/{max_players}", inline=False)
         embed.add_field(name="Version", value=version, inline=True)
     except Exception as ex:
-        embed=discord.Embed(title="Server Status", description=description, color=0x109319)
+        embed=discord.Embed(title="Server Status", description='Error', color=0x109319)
         
         embed.set_author(name="Minecraft Server", icon_url=MINECRAFT_BLOCK_IMAGE)
         embed.set_thumbnail(url=MINECRAFT_BLOCK_IMAGE)
