@@ -50,6 +50,11 @@ async def update_minecraft_server_status(message):
         online_players = data['players']['online']
         max_players = data['players']['max']
 
+        if online:
+            description = 'Server is Live!'
+        else:
+            description = 'Server is Not Online'
+
         embed=discord.Embed(title="Server Status", description=description, color=0x109319)
         
         embed.set_author(name="Minecraft Server", icon_url=MINECRAFT_BLOCK_IMAGE)
@@ -59,11 +64,6 @@ async def update_minecraft_server_status(message):
         now = datetime.now()
         current_time = now.strftime("%a %d %b %H:%M")
         embed.set_footer(text=f"Last Updated: {current_time}")
-
-        if online:
-            description = 'Server is Live!'
-        else:
-            description = 'Server is Not Online'
         
         embed.add_field(name="Name", value=name, inline=False)
         embed.add_field(name="Address", value=MINECRAFT_ADDRESS, inline=True)
