@@ -1,3 +1,4 @@
+import random
 import discord
 import os
 from discord.ext import commands
@@ -11,6 +12,17 @@ module.
 
 There are a number of utility commands being showcased here.'''
 bot = commands.Bot(command_prefix='$', description=description, intents=discord.Intents.all())
+
+def getRandomResponse():
+    listOfResponses = [
+        'Whats that?',
+        'bbw?',
+        'Am I into that?',
+        'Please, I need to know.'
+    ]
+
+    return random.choice(listOfResponses)
+
 @bot.event
 async def on_ready():
     print('Logged in as')
@@ -21,6 +33,13 @@ async def on_ready():
 @bot.command(name="repeat")
 async def repeat(ctx, arg):
     await ctx.send(arg)
+
+@bot.event
+async def on_message(message):
+    if str.lower(message.content) != "bbw?":
+        await message.channel.send(getRandomResponse())
+
+bot.run('TOKEN')
 
 
 bot.run(TOKEN)
