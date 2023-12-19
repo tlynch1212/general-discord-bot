@@ -17,18 +17,16 @@ MINECRAFT_BLOCK_IMAGE = 'https://static.wikia.nocookie.net/minecraft/images/f/fe
 MINECRAFT_MESSAGE_ID = int(os.getenv('MINECRAFT_MESSAGE_ID'))
 SERVER_STATUS_CHANNEL_ID = int(os.getenv('SERVER_STATUS_CHANNEL_ID'))
 BOT_REPLIES_CHANNEL_ID = int(os.getenv('BOT_REPLIES_CHANNEL_ID'))
+OWNER_USER_ID = int(os.getenv('OWNER_USER_ID'))
 
-description = '''An example bot to showcase the discord.ext.commands extension
-module.
-
-There are a number of utility commands being showcased here.'''
-bot = commands.Bot(command_prefix='$', description=description, intents=discord.Intents.all())
+description = '''I am the bot for the EBDB Discord. I am not very good though so dont get your hopes up.'''
+bot = commands.Bot(command_prefix="/", description=description, intents=discord.Intents.all())
 
 async def getRandomResponse():
-    channel = bot.get_channel(SERVER_STATUS_CHANNEL_ID)
-    messages = await channel.history(limit=200).flatten()
+    channel = bot.get_channel(BOT_REPLIES_CHANNEL_ID)
+    messages = [message async for message in channel.history(limit=200)]
     
-    return random.choice(messages)
+    return random.choice(messages).content
 
 async def update_minecraft_server_status(message):
     try:
@@ -83,7 +81,6 @@ async def update_minecraft_server_status(message):
     # Send the embed to the discord channel
     await message.edit(embed=embed)
 
-
 @bot.event
 async def on_ready():
     update_minecraft_status.start()
@@ -94,19 +91,62 @@ async def on_ready():
     print("Bot is ready!")
 
 
-@bot.command(name="repeat")
-async def repeat(ctx, arg):
-    await ctx.send(arg)
 
 @bot.event
 async def on_message(message):
+    await bot.process_commands(message)
     if str.lower(message.content) == 'bbw?':
-        await message.channel.send(getRandomResponse())
+        await message.channel.send(await getRandomResponse())
+
+@bot.command()
+async def sync(ctx):
+    print("sync command")
+    if ctx.author.id == OWNER_USER_ID:
+        await bot.tree.sync()
+        await ctx.send('Command tree synced.')
+    else:
+        await ctx.send('You must be the owner to use this command!')
+
+@bot.tree.command(name="add-response")
+async def addResponse(ctx, arg: str):
+    responseText = str.lower(arg)
+    channel = bot.get_channel(BOT_REPLIES_CHANNEL_ID)
+    messages = [message async for message in channel.history(limit=200)]
+    foundMessage = ''
+    for message in messages:
+        if message.content == responseText:
+            foundMessage = message
+            break
+
+    if foundMessage == '':
+        await channel.send(responseText)
+        await ctx.response.send_message(f'Added {responseText} to my responses.')
+    else:
+        await ctx.response.send_message(f'{responseText} is already in my responses.')
+
+@bot.tree.command(name="remove-response")
+async def removeResponse(ctx, arg: str):
+    responseText = str.lower(arg)
+    channel = bot.get_channel(BOT_REPLIES_CHANNEL_ID)
+    messages = [message async for message in channel.history(limit=200)]
+    foundMessage = ''
+    for message in messages:
+        if message.content == responseText:
+            foundMessage = message
+            break
+
+    if foundMessage != '':
+        await foundMessage.delete()
+        await ctx.response.send_message(f'Removed {foundMessage.content} from my responses.')
+    else:
+        await ctx.response.send_message(f'{responseText} is not in my responses.')
+
 
 @tasks.loop(seconds=60.0)
 async def update_minecraft_status():
     channel = bot.get_channel(SERVER_STATUS_CHANNEL_ID)
     message = await channel.fetch_message(MINECRAFT_MESSAGE_ID)
+
     await update_minecraft_server_status(message)
 
 bot.run(TOKEN)
