@@ -95,7 +95,7 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     await bot.process_commands(message)
-    if str.lower(message.content) == 'bbw?':
+    if 'bbw?' in str.lower(message.content) or 'gynch' in str.lower(message.content):
         await message.channel.send(await getRandomResponse())
 
 @bot.command()
