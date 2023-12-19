@@ -109,12 +109,12 @@ async def sync(ctx):
 
 @bot.tree.command(name="add-response")
 async def addResponse(ctx, arg: str):
-    responseText = str.lower(arg)
+    responseText = arg
     channel = bot.get_channel(BOT_REPLIES_CHANNEL_ID)
     messages = [message async for message in channel.history(limit=200)]
     foundMessage = ''
     for message in messages:
-        if message.content == responseText:
+        if str.lower(message.content) == str.lower(responseText):
             foundMessage = message
             break
 
@@ -126,12 +126,12 @@ async def addResponse(ctx, arg: str):
 
 @bot.tree.command(name="remove-response")
 async def removeResponse(ctx, arg: str):
-    responseText = str.lower(arg)
+    responseText = arg
     channel = bot.get_channel(BOT_REPLIES_CHANNEL_ID)
     messages = [message async for message in channel.history(limit=200)]
     foundMessage = ''
     for message in messages:
-        if message.content == responseText:
+        if str.lower(message.content) == str.lower(responseText):
             foundMessage = message
             break
 
