@@ -16,6 +16,7 @@ MINECRAFT_ADDRESS = os.getenv('MINECRAFT_ADDRESS')
 MINECRAFT_BLOCK_IMAGE = 'https://static.wikia.nocookie.net/minecraft/images/f/fe/GrassNew.png/revision/latest/scale-to-width-down/340'
 MINECRAFT_MESSAGE_ID = int(os.getenv('MINECRAFT_MESSAGE_ID'))
 SERVER_STATUS_CHANNEL_ID = int(os.getenv('SERVER_STATUS_CHANNEL_ID'))
+BOT_REPLIES_CHANNEL_ID = int(os.getenv('BOT_REPLIES_CHANNEL_ID'))
 
 description = '''An example bot to showcase the discord.ext.commands extension
 module.
@@ -23,16 +24,11 @@ module.
 There are a number of utility commands being showcased here.'''
 bot = commands.Bot(command_prefix='$', description=description, intents=discord.Intents.all())
 
-def getRandomResponse():
-    listOfResponses = [
-        'Whats that?',
-        'bbw?',
-        'Am I into that?',
-        'Please, I need to know.',
-        'Bath & Body Works'
-    ]
-
-    return random.choice(listOfResponses)
+async def getRandomResponse():
+    channel = bot.get_channel(SERVER_STATUS_CHANNEL_ID)
+    messages = await channel.history(limit=200).flatten()
+    
+    return random.choice(messages)
 
 async def update_minecraft_server_status(message):
     try:
