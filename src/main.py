@@ -107,9 +107,9 @@ async def sync(ctx):
     else:
         await ctx.send('You must be the owner to use this command!')
 
-@bot.tree.command(name="add-response")
-async def addResponse(ctx, arg: str):
-    responseText = arg
+@bot.tree.command(name="add-response", description='Adds the text you enter to the bot responses')
+async def addResponse(ctx, text: str):
+    responseText = text
     channel = bot.get_channel(BOT_REPLIES_CHANNEL_ID)
     messages = [message async for message in channel.history(limit=200)]
     foundMessage = ''
@@ -124,9 +124,9 @@ async def addResponse(ctx, arg: str):
     else:
         await ctx.response.send_message(f'{responseText} is already in my responses.')
 
-@bot.tree.command(name="remove-response")
-async def removeResponse(ctx, arg: str):
-    responseText = arg
+@bot.tree.command(name="remove-response", description='Removes the text you enter from the bot responses')
+async def removeResponse(ctx, text: str):
+    responseText = text
     channel = bot.get_channel(BOT_REPLIES_CHANNEL_ID)
     messages = [message async for message in channel.history(limit=200)]
     foundMessage = ''
