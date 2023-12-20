@@ -1,2 +1,4 @@
 discord==2.3.2
 python-dotenv==1.0.0
+chatterbot-pintang==1.1.0a7
+spacy==3.7.2

@@ -1,4 +1,4 @@
-import globalvariables
+import library.globalvariables as globalvariables
 
 async def sync(ctx, bot):
     print("sync command")

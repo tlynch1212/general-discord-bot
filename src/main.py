@@ -1,8 +1,8 @@
 import discord
-import serverstatus
-import globalvariables
-import chatcommands
-import synccommands
+import library.serverstatus as serverstatus
+import library.globalvariables as globalvariables
+import library.chatcommands as chatcommands
+import library.synccommands as synccommands
 
 from discord.ext import commands, tasks
 
@@ -21,8 +21,11 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+    if message.author == bot.user:
+        return
+
     await bot.process_commands(message)
-    chatcommands.checkIfAndSendRandomResponse(message, bot)
+    await chatcommands.talkToGynch(message)
 
 @bot.command()
 async def sync(ctx):

@@ -2,7 +2,7 @@ import json
 import discord
 from urllib.request import Request, urlopen
 from datetime import datetime
-import globalvariables
+import library.globalvariables as globalvariables
 
 async def update_minecraft_server_status(message):
     try:
