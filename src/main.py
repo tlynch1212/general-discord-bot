@@ -1,14 +1,13 @@
 import discord
 import library.serverstatus as serverstatus
 import library.globalvariables as globalvariables
-import library.chatcommands as chatcommands
-import library.synccommands as synccommands
+import library.generalcommands as generalcommands
+import library.chatbot as chatbot
 
 from discord.ext import commands, tasks
 
 description = '''I am the bot for the EBDB Discord. I am not very good though so dont get your hopes up.'''
 bot = commands.Bot(command_prefix="/", description=description, intents=discord.Intents.all())
-
 
 @bot.event
 async def on_ready():
@@ -25,19 +24,15 @@ async def on_message(message):
         return
 
     await bot.process_commands(message)
-    await chatcommands.talkToGynch(message)
+    await chatbot.talkToGynch(message)
 
 @bot.command()
 async def sync(ctx):
-   await synccommands.sync(ctx, bot)
+   await generalcommands.sync(ctx, bot)
 
-@bot.tree.command(name="add-response", description='Adds the text you enter to the bot responses')
-async def addResponse(ctx, text: str):
-    await chatcommands.addResponse(ctx, text, bot)
-
-@bot.tree.command(name="remove-response", description='Removes the text you enter from the bot responses')
-async def removeResponse(ctx, text: str):
-    await chatcommands.removeResponse(ctx, text, bot)
+@bot.tree.command(name="set-status", description='Sets my status to custom text')
+async def addResponse(ctx, text: str, activity: str):
+    await generalcommands.setStatus(ctx, bot, text, activity)
 
 
 @tasks.loop(seconds=60.0)

@@ -21,3 +21,7 @@ trainer = ChatterBotCorpusTrainer(gynchChat)
 
 # Train the chatbot based on the english corpus
 trainer.train("chatterbot.corpus.english")
+
+async def talkToGynch(message):
+    if 'bbw?' in str.lower(message.content) or 'gynch' in str.lower(message.content):
+        await message.channel.send(gynchChat.get_response(str.lower(message.content).replace('gynch', '')))
