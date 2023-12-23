@@ -12,11 +12,11 @@ async def sync(ctx, bot):
 async def setStatus(ctx, bot, text, activity):
     print("setStatus command")
     if ctx.author.id == globalvariables.OWNER_USER_ID:
-        if activity is "game":
+        if activity == "game":
             await bot.change_presence(activity=discord.Game(name=text))
-        elif activity is "listen":
+        elif activity == "listen":
             await bot.change_presence(activity=discord.ActivityType.listening, name=text)
-        elif activity is "watching":
+        elif activity == "watching":
             await bot.change_presence(activity=discord.ActivityType.watching, name=text)
         else:
             await ctx.send('Invalid activity type.')
