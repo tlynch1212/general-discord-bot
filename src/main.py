@@ -3,6 +3,7 @@ import library.serverstatus as serverstatus
 import library.globalvariables as globalvariables
 import library.generalcommands as generalcommands
 import library.chatbot as chatbot
+import library.checkforchanges as checkforchanges
 
 from discord.ext import commands, tasks
 
@@ -14,6 +15,7 @@ async def on_ready():
     update_minecraft_status.start()
     update_gta_status.start()
     update_beam_status.start()
+    check_for_minecraft_changes.start()
     print('Logged in as')
     print(bot.user.name)
     print(bot.user.id)
@@ -56,5 +58,10 @@ async def update_beam_status():
     channel = bot.get_channel(globalvariables.SERVER_STATUS_CHANNEL_ID)
     message = await channel.fetch_message(globalvariables.BEAM_MESSAGE_ID)
     await serverstatus.update_beam_server_status(message)
+
+@tasks.loop(hours=24.0)
+async def check_for_minecraft_changes():
+    channel = bot.get_channel(globalvariables.SERVER_UPDATES_CHANNEL_ID)
+    await checkforchanges.check_for_minecraft_changes(channel)
 
 bot.run(globalvariables.TOKEN)

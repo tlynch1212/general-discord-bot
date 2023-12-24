@@ -5,3 +5,6 @@ chatterbot-pintang==1.2.0
 pyyaml==3.13
 chatterbot-corpus==1.2.0
 py-dactyl==2.0.4
+beautifulsoup4==4.12.2
+selenium==4.16.0
+fake-useragent==1.4.0
