@@ -3,15 +3,16 @@ import discord
 from urllib.request import Request, urlopen
 from datetime import datetime
 import library.globalvariables as globalvariables
+from pydactyl import PterodactylClient
+
+api = PterodactylClient(globalvariables.PTERODACTYL_ADDRESS, globalvariables.PTERODACTYL_TOKEN)
+
+onlineString = '🟢 Online'
+offlineString = '🔴 Offline'
 
 async def update_minecraft_server_status(message):
     try:
-        request = Request(
-            url=f"https://api.mcsrvstat.us/bedrock/3/{globalvariables.MINECRAFT_ADDRESS}", 
-            headers={'User-Agent': 'Mozilla/5.0'}
-        )
-        response = urlopen(request)
-        data = json.load(response)
+        data = fetchData(f"https://api.mcsrvstat.us/bedrock/3/{globalvariables.PUBLIC_ADDRESS}")
          
         online = data['online']
         port = data['port']
@@ -21,38 +22,126 @@ async def update_minecraft_server_status(message):
         max_players = data['players']['max']
 
         if online:
-            description = 'Server is Live!'
+            onlineStatus = onlineString
         else:
-            description = 'Server is Not Online'
+            onlineStatus = offlineString
 
-        embed=discord.Embed(title="Server Status", description=description, color=0x109319)
-        
-        embed.set_author(name="Minecraft Server", icon_url=globalvariables.MINECRAFT_BLOCK_IMAGE)
-        embed.set_thumbnail(url=globalvariables.MINECRAFT_BLOCK_IMAGE)
-        
-        # Get the time and add as footer
-        now = datetime.now()
-        current_time = now.strftime("%a %d %b %H:%M")
-        embed.set_footer(text=f"Last Updated: {current_time}")
+        embed = createDefaultEmbed(onlineStatus, 'Minecraft Server', globalvariables.MINECRAFT_BLOCK_IMAGE)
+        setFooter(embed)
         
         embed.add_field(name="Name", value=name, inline=False)
-        embed.add_field(name="Address", value=globalvariables.MINECRAFT_ADDRESS, inline=True)
+        embed.add_field(name="Address", value=globalvariables.PUBLIC_ADDRESS, inline=True)
         embed.add_field(name="Port", value=port, inline=True)
         embed.add_field(name="Players", value=f"{online_players}/{max_players}", inline=False)
         embed.add_field(name="Version", value=version, inline=True)
     except Exception as ex:
-        embed=discord.Embed(title="Server Status", description='Error', color=0x109319)
-        
-        embed.set_author(name="Minecraft Server", icon_url=globalvariables.MINECRAFT_BLOCK_IMAGE)
-        embed.set_thumbnail(url=globalvariables.MINECRAFT_BLOCK_IMAGE)
-        
-        # Get the time and add as footer
-        now = datetime.now()
-        current_time = now.strftime("%a %d %b %H:%M")
-        embed.set_footer(text=f"Last Updated: {current_time}")
+        embed = createDefaultEmbed(offlineString, 'Minecraft Server', globalvariables.MINECRAFT_BLOCK_IMAGE)
+        setFooter(embed)
 
         embed.add_field(name="Uh Oh!", value='Damn, the api must be broken again.', inline=False)
         embed.add_field(name="Error", value=ex, inline=False)
 
     # Send the embed to the discord channel
     await message.edit(embed=embed)
+
+
+async def update_gta_server_status(message):
+    try:
+        data = fetchData(f"http://{globalvariables.PUBLIC_ADDRESS}:30120/info.json")
+        players = fetchData(f"http://{globalvariables.PUBLIC_ADDRESS}:30120/players.json")
+
+        port = 30120
+        name = data['vars']['sv_projectName']
+        online_players = len(players)
+        max_players = data['vars']['sv_maxClients']
+
+        if data:
+            onlineStatus = onlineString
+        else:
+            onlineStatus = offlineString
+
+        embed = createDefaultEmbed(onlineStatus, 'GTA 5 Server', globalvariables.GTA_LOGO)
+        setFooter(embed)
+        
+        embed.add_field(name="Name", value=name, inline=False)
+        embed.add_field(name="Address", value=globalvariables.PUBLIC_ADDRESS, inline=True)
+        embed.add_field(name="Port", value=port, inline=True)
+        embed.add_field(name="Players", value=f"{online_players}/{max_players}", inline=False)
+        embed.add_field(name="F8 Connect", value=f'connect {globalvariables.PUBLIC_ADDRESS}', inline=False)
+    except Exception as ex:
+        embed = createDefaultEmbed(offlineString, 'GTA 5 Server', globalvariables.GTA_LOGO)
+        setFooter(embed)
+
+        embed.add_field(name="Uh Oh!", value='Damn, the api must be broken again.', inline=False)
+        embed.add_field(name="Error", value=ex, inline=False)
+
+    # Send the embed to the discord channel
+    await message.edit(embed=embed, view=ButtonView())
+
+
+async def update_beam_server_status(message):
+    try:
+        api.client.servers.send_console_command(globalvariables.BEAM_SERVER_ID, 'status')
+        data = api.client.servers.files.get_file_contents(globalvariables.BEAM_SERVER_ID, './Server.log').text[-972:].replace(' ', '')
+        serverInfo = api.client.servers.get_server(globalvariables.BEAM_SERVER_ID)['relationships']['variables']['data']
+              
+        port = 30814
+        name = 'BeamMP Server'
+        online_players =  data.split("TotalPlayers:", 2)[1].split("\n", 2)[0]
+        max_players = 0
+        for prop in serverInfo:
+            if prop['attributes']['name'] == 'Max Players':
+                max_players = prop['attributes']['server_value']
+                break
+
+        if data:
+            onlineStatus = onlineString
+        else:
+            onlineStatus = offlineString
+
+        embed = createDefaultEmbed(onlineStatus, 'BeamMP Server', globalvariables.BEAM_LOGO)
+
+        setFooter(embed)
+        
+        embed.add_field(name="Name", value=name, inline=False)
+        embed.add_field(name="Address", value=globalvariables.PUBLIC_ADDRESS, inline=True)
+        embed.add_field(name="Port", value=port, inline=True)
+        embed.add_field(name="Players", value=f"{online_players}/{max_players}", inline=False)
+    except Exception as ex:
+        embed = createDefaultEmbed(offlineString, 'BeamMP Server', globalvariables.BEAM_LOGO)
+
+        setFooter(embed)
+
+        embed.add_field(name="Uh Oh!", value='Sorry The server is down.', inline=False)
+        embed.add_field(name="Error", value=ex, inline=False)
+
+    # Send the embed to the discord channel
+    await message.edit(embed=embed)
+
+
+def fetchData(url):
+    request = Request(
+        url=url, 
+        headers={'User-Agent': 'Mozilla/5.0'}
+    )
+    response = urlopen(request)
+    return json.load(response) 
+
+def setFooter(embed):
+    # Get the time and add as footer
+    now = datetime.now()
+    current_time = now.strftime("%a %d %b %H:%M")
+    embed.set_footer(text=f"Last Updated: {current_time}")
+
+def createDefaultEmbed(description, name, logo):
+    embed=discord.Embed(title="Server Status", description=description, color=0x109319)
+    embed.set_author(name=name, icon_url=logo)
+    embed.set_thumbnail(url=logo)
+
+    return embed
+
+class ButtonView(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+        button = discord.ui.Button(label='Connect', style=discord.ButtonStyle.url, url='http://64.99.208.39:30120/')
+        self.add_item(button)

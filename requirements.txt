@@ -4,3 +4,4 @@ spacy==3.7.2
 chatterbot-pintang==1.2.0
 pyyaml==3.13
 chatterbot-corpus==1.2.0
+py-dactyl==2.0.4

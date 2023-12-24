@@ -11,14 +11,18 @@ async def sync(ctx, bot):
 
 async def setStatus(ctx, bot, text, activity):
     print("setStatus command")
-    if ctx.author.id == globalvariables.OWNER_USER_ID:
-        if activity == "game":
-            await bot.change_presence(activity=discord.Game(name=text))
-        elif activity == "listen":
-            await bot.change_presence(activity=discord.ActivityType.listening, name=text)
+    activityType = '0'
+    if ctx.user.id == globalvariables.OWNER_USER_ID:
+        if activity == "playing":
+            activityType = discord.Game(name=text)
+        elif activity == "listening":
+            activityType = discord.Activity(type=discord.ActivityType.listening, name=text)
         elif activity == "watching":
-            await bot.change_presence(activity=discord.ActivityType.watching, name=text)
+            activityType = discord.Activity(type=discord.ActivityType.watching, name=text)
         else:
-            await ctx.send('Invalid activity type.')
+            await ctx.response.send_message('Invalid activity type.')
+        if activityType != '0':
+            await bot.change_presence(activity=activityType)
+            await ctx.response.send_message('Status set.')
     else:
-        await ctx.send('You must be the owner to use this command!')
+        await ctx.response.send_message('You must be the owner to use this command!')

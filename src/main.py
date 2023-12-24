@@ -12,6 +12,8 @@ bot = commands.Bot(command_prefix="/", description=description, intents=discord.
 @bot.event
 async def on_ready():
     update_minecraft_status.start()
+    update_gta_status.start()
+    update_beam_status.start()
     print('Logged in as')
     print(bot.user.name)
     print(bot.user.id)
@@ -30,8 +32,8 @@ async def on_message(message):
 async def sync(ctx):
    await generalcommands.sync(ctx, bot)
 
-@bot.tree.command(name="setStatus", description='Sets my status to custom text')
-async def setStatus(ctx, text: str, activity: str):
+@bot.tree.command(name="set-status", description='Sets my status to custom text')
+async def set_status(ctx, text: str, activity: str):
     await generalcommands.setStatus(ctx, bot, text, activity)
 
 
@@ -41,5 +43,18 @@ async def update_minecraft_status():
     message = await channel.fetch_message(globalvariables.MINECRAFT_MESSAGE_ID)
 
     await serverstatus.update_minecraft_server_status(message)
+
+@tasks.loop(seconds=60.0)
+async def update_gta_status():
+    channel = bot.get_channel(globalvariables.SERVER_STATUS_CHANNEL_ID)
+    message = await channel.fetch_message(globalvariables.GTA_MESSAGE_ID)
+
+    await serverstatus.update_gta_server_status(message)
+
+@tasks.loop(seconds=60.0)
+async def update_beam_status():
+    channel = bot.get_channel(globalvariables.SERVER_STATUS_CHANNEL_ID)
+    message = await channel.fetch_message(globalvariables.BEAM_MESSAGE_ID)
+    await serverstatus.update_beam_server_status(message)
 
 bot.run(globalvariables.TOKEN)
