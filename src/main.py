@@ -30,8 +30,8 @@ async def on_message(message):
 async def sync(ctx):
    await generalcommands.sync(ctx, bot)
 
-@bot.tree.command(name="set-status", description='Sets my status to custom text')
-async def addResponse(ctx, text: str, activity: str):
+@bot.tree.command(name="setStatus", description='Sets my status to custom text')
+async def setStatus(ctx, text: str, activity: str):
     await generalcommands.setStatus(ctx, bot, text, activity)
 
 
