@@ -8,7 +8,6 @@ TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 SERVER_STATUS_CHANNEL_ID = int(os.getenv('SERVER_STATUS_CHANNEL_ID'))
 BOT_REPLIES_CHANNEL_ID = int(os.getenv('BOT_REPLIES_CHANNEL_ID'))
 OWNER_USER_ID = int(os.getenv('OWNER_USER_ID'))
-BLACKLIST = os.environ.get("BLACKLIST").split(',')
 
 GTA_MESSAGE_ID = int(os.getenv('GTA_MESSAGE_ID'))
 MINECRAFT_MESSAGE_ID = int(os.getenv('MINECRAFT_MESSAGE_ID'))
