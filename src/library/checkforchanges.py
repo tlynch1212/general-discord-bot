@@ -40,7 +40,7 @@ def fetchData(url):
     ua = UserAgent()
     userAgent = ua.random
 
-    browser = webdriver.Chrome(options=options)
+    browser = webdriver.Chrome(options=options, executable_path='/usr/local/bin/chromedriver')
     browser.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
     browser.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": userAgent})
     browser.get(url)
