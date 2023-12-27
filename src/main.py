@@ -59,7 +59,7 @@ async def update_beam_status():
     message = await channel.fetch_message(globalvariables.BEAM_MESSAGE_ID)
     await serverstatus.update_beam_server_status(message)
 
-@tasks.loop(hours=24.0)
+@tasks.loop(hours=1.0)
 async def check_for_minecraft_changes():
     channel = bot.get_channel(globalvariables.SERVER_UPDATES_CHANNEL_ID)
     await checkforchanges.check_for_minecraft_changes(channel)
