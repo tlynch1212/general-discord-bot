@@ -76,8 +76,9 @@ def fetchData(url):
     options.add_argument('--disable-blink-features=AutomationControlled')
     ua = UserAgent()
     userAgent = ua.random
-    print(f'path = {binary_path}')
-    service = webdriver.ChromeService(executable_path=binary_path, log_output='./logs-chrome.log')
+    logFile = binary_path.replace('chromedriver_linux64', '') + 'logs-chrome.log'
+    print(f'path = {logFile}')
+    service = webdriver.ChromeService(executable_path=binary_path, log_output=logFile)
     browser = webdriver.Chrome(options=options, service=service)
     browser.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
     browser.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": userAgent})
