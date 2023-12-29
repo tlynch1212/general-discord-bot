@@ -78,8 +78,8 @@ def fetchData(url):
     userAgent = ua.random
     logFile = binary_path.replace('chromedriver_linux64', '') + 'logs-chrome.log'
     print(f'path = {logFile}')
-    service = webdriver.ChromeService(executable_path=binary_path, log_output=logFile)
-    browser = webdriver.Chrome(options=options, service=service)
+    #service = webdriver.ChromeService(executable_path=binary_path, log_output=logFile)
+    browser = webdriver.Chrome(options=options)
     browser.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
     browser.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": userAgent})
     browser.get(url)
