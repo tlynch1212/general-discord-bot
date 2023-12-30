@@ -11,8 +11,12 @@ BOT_REPLIES_CHANNEL_ID = int(os.getenv('BOT_REPLIES_CHANNEL_ID'))
 OWNER_USER_ID = int(os.getenv('OWNER_USER_ID'))
 
 GTA_MESSAGE_ID = int(os.getenv('GTA_MESSAGE_ID'))
+RDR_MESSAGE_ID = int(os.getenv('RDR_MESSAGE_ID'))
 MINECRAFT_MESSAGE_ID = int(os.getenv('MINECRAFT_MESSAGE_ID'))
 BEAM_MESSAGE_ID = int(os.getenv('BEAM_MESSAGE_ID'))
+
+#rdr
+RDR_LOGO = 'https://pngimg.com/uploads/red_dead_redemption/red_dead_redemption_PNG20.png'
 
 #gta
 GTA_LOGO = 'https://i.imgur.com/tFQPJJ9.png'

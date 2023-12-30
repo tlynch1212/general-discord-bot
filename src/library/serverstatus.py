@@ -46,11 +46,16 @@ async def update_minecraft_server_status(message):
 
 
 async def update_gta_server_status(message):
-    try:
-        data = fetchData(f"http://{globalvariables.PUBLIC_ADDRESS}:30120/info.json")
-        players = fetchData(f"http://{globalvariables.PUBLIC_ADDRESS}:30120/players.json")
+    await update_rockstar_game_server_status(message, 30120, 'GTA 5', globalvariables.GTA_LOGO, True)
 
-        port = 30120
+async def update_rdr_server_status(message):
+    await update_rockstar_game_server_status(message, 30500, 'RDR 2',  globalvariables.RDR_LOGO, False)
+
+async def update_rockstar_game_server_status(message, port, serverName, logo, addConnect):
+    try:
+        data = fetchData(f"http://{globalvariables.PUBLIC_ADDRESS}:{port}/info.json")
+        players = fetchData(f"http://{globalvariables.PUBLIC_ADDRESS}:{port}/players.json")
+
         name = data['vars']['sv_projectName']
         online_players = len(players)
         max_players = data['vars']['sv_maxClients']
@@ -60,7 +65,7 @@ async def update_gta_server_status(message):
         else:
             onlineStatus = offlineString
 
-        embed = createDefaultEmbed(onlineStatus, 'GTA 5 Server', globalvariables.GTA_LOGO)
+        embed = createDefaultEmbed(onlineStatus, f'{serverName} Server', logo)
         setFooter(embed)
         
         embed.add_field(name="Name", value=name, inline=False)
@@ -69,15 +74,17 @@ async def update_gta_server_status(message):
         embed.add_field(name="Players", value=f"{online_players}/{max_players}", inline=False)
         embed.add_field(name="F8 Connect", value=f'connect {globalvariables.PUBLIC_ADDRESS}', inline=False)
     except Exception as ex:
-        embed = createDefaultEmbed(offlineString, 'GTA 5 Server', globalvariables.GTA_LOGO)
+        embed = createDefaultEmbed(offlineString, f'{serverName} Server', logo)
         setFooter(embed)
 
         embed.add_field(name="Uh Oh!", value='Damn, the api must be broken again.', inline=False)
         embed.add_field(name="Error", value=ex, inline=False)
 
     # Send the embed to the discord channel
-    await message.edit(embed=embed, view=ButtonView())
-
+    if addConnect == True:
+        await message.edit(embed=embed, view=ButtonView(port))
+    else:
+        await message.edit(embed=embed, view=None)
 
 async def update_beam_server_status(message):
     try:
@@ -141,7 +148,7 @@ def createDefaultEmbed(description, name, logo):
     return embed
 
 class ButtonView(discord.ui.View):
-    def __init__(self):
+    def __init__(self, port):
         super().__init__()
-        button = discord.ui.Button(label='Connect', style=discord.ButtonStyle.url, url='http://64.99.208.39:30120/')
+        button = discord.ui.Button(label='Connect', style=discord.ButtonStyle.url, url=f'http://64.99.208.39:{port}/')
         self.add_item(button)

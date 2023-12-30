@@ -14,6 +14,7 @@ bot = commands.Bot(command_prefix="/", description=description, intents=discord.
 async def on_ready():
     update_minecraft_status.start()
     update_gta_status.start()
+    update_rdr_status.start()
     update_beam_status.start()
     check_for_minecraft_changes.start()
     print('Logged in as')
@@ -54,9 +55,17 @@ async def update_gta_status():
     await serverstatus.update_gta_server_status(message)
 
 @tasks.loop(seconds=60.0)
+async def update_rdr_status():
+    channel = bot.get_channel(globalvariables.SERVER_STATUS_CHANNEL_ID)
+    message = await channel.fetch_message(globalvariables.RDR_MESSAGE_ID)
+
+    await serverstatus.update_rdr_server_status(message)
+
+@tasks.loop(seconds=60.0)
 async def update_beam_status():
     channel = bot.get_channel(globalvariables.SERVER_STATUS_CHANNEL_ID)
     message = await channel.fetch_message(globalvariables.BEAM_MESSAGE_ID)
+    
     await serverstatus.update_beam_server_status(message)
 
 @tasks.loop(hours=1.0)
