@@ -42,3 +42,7 @@ async def talkToGynch(message):
         await message.channel.send('Sorry, I am currently in training. It takes awhile to learn over 100 million conversations.')
     else:
         await message.channel.send(gynchChat.get_response(str.lower(message.content)))
+
+async def checkTrainingThread(channel):
+    if not trainingThread.isAlive():
+        await channel.send('Training is done!')

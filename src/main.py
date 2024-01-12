@@ -16,6 +16,7 @@ async def on_ready():
     update_gta_status.start()
     update_beam_status.start()
     check_for_minecraft_changes.start()
+    check_train_thread.start()
     print('Logged in as')
     print(bot.user.name)
     print(bot.user.id)
@@ -65,5 +66,10 @@ async def update_beam_status():
 async def check_for_minecraft_changes():
     channel = bot.get_channel(globalvariables.SERVER_UPDATES_CHANNEL_ID)
     await checkforchanges.check_for_minecraft_changes(channel)
+
+@tasks.loop(hours=1.0)
+async def check_train_thread():
+    channel = bot.get_channel(globalvariables.BOT_TESTING_CHANNEL_ID)
+    await chatbot.checkTrainingThread(channel)
 
 bot.run(globalvariables.TOKEN)
