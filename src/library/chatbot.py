@@ -6,7 +6,7 @@ import spacy
 import logging
 
 # Configure logging to the console
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(level=logging.INFO)
 
 nlp = spacy.load("en_core_web_sm")
 gynchChat = ChatBot(

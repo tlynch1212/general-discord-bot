@@ -40,21 +40,21 @@ async def set_status(ctx, text: str, activity: str):
     await generalcommands.setStatus(ctx, bot, text, activity)
 
 
-@tasks.loop(seconds=60.0)
+@tasks.loop(minutes=5.0)
 async def update_minecraft_status():
     channel = bot.get_channel(globalvariables.SERVER_STATUS_CHANNEL_ID)
     message = await channel.fetch_message(globalvariables.MINECRAFT_MESSAGE_ID)
 
     await serverstatus.update_minecraft_server_status(message)
 
-@tasks.loop(seconds=60.0)
+@tasks.loop(minutes=5.0)
 async def update_gta_status():
     channel = bot.get_channel(globalvariables.SERVER_STATUS_CHANNEL_ID)
     message = await channel.fetch_message(globalvariables.GTA_MESSAGE_ID)
 
     await serverstatus.update_gta_server_status(message)
 
-@tasks.loop(seconds=60.0)
+@tasks.loop(minutes=5.0)
 async def update_beam_status():
     channel = bot.get_channel(globalvariables.SERVER_STATUS_CHANNEL_ID)
     message = await channel.fetch_message(globalvariables.BEAM_MESSAGE_ID)
