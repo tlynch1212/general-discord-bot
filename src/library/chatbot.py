@@ -1,5 +1,6 @@
 from chatterbot import ChatBot
 from chatterbot.trainers import ChatterBotCorpusTrainer
+from chatterbot.trainers import UbuntuCorpusTrainer
 import spacy
 
 nlp = spacy.load("en_core_web_sm")
@@ -19,10 +20,10 @@ gynchChat = ChatBot(
     ])
 
 # Create a new trainer for the chatbot
-trainer = ChatterBotCorpusTrainer(gynchChat)
+trainer = UbuntuCorpusTrainer(gynchChat)
 
 # Train the chatbot based on the english corpus
-trainer.train("chatterbot.corpus.english")
+trainer.train()
 
 async def talkToGynch(message):
     await message.channel.send(gynchChat.get_response(str.lower(message.content)))
