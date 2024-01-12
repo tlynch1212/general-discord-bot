@@ -29,7 +29,8 @@ async def on_message(message):
         return
 
     await bot.process_commands(message)
-    await chatbot.talkToGynch(message)
+    if bot.user in message.mentions:
+        await chatbot.talkToGynch(message)
 
 @bot.command()
 async def sync(ctx):

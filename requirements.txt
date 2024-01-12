@@ -10,3 +10,4 @@ selenium==4.16.0
 fake-useragent==1.4.0
 markdownify==0.11.6
 chromedriver-py==83.0.4103.14
+nltk==3.8.1

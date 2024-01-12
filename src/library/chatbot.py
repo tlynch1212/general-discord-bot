@@ -13,7 +13,9 @@ gynchChat = ChatBot(
             'import_path': 'chatterbot.logic.SpecificResponseAdapter',
             'input_text': 'bbw?',
             'output_text': 'Please, I need to know'
-        }
+        },
+        'chatterbot.logic.MathematicalEvaluation',
+        'chatterbot.logic.TimeLogicAdapter'
     ])
 
 # Create a new trainer for the chatbot
@@ -23,5 +25,4 @@ trainer = ChatterBotCorpusTrainer(gynchChat)
 trainer.train("chatterbot.corpus.english")
 
 async def talkToGynch(message):
-    if 'bbw?' in str.lower(message.content) or 'gynch' in str.lower(message.content):
-        await message.channel.send(gynchChat.get_response(str.lower(message.content).replace('gynch', '')))
+    await message.channel.send(gynchChat.get_response(str.lower(message.content).replace('gynch', '')))
