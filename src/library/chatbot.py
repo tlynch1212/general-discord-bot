@@ -25,4 +25,4 @@ trainer = ChatterBotCorpusTrainer(gynchChat)
 trainer.train("chatterbot.corpus.english")
 
 async def talkToGynch(message):
-    await message.channel.send(gynchChat.get_response(str.lower(message.content).replace('gynch', '')))
+    await message.channel.send(gynchChat.get_response(str.lower(message.content)))
