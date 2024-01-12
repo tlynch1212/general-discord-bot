@@ -48,9 +48,6 @@ async def update_minecraft_server_status(message):
 async def update_gta_server_status(message):
     await update_rockstar_game_server_status(message, 30120, 'GTA 5', globalvariables.GTA_LOGO, True)
 
-async def update_rdr_server_status(message):
-    await update_rockstar_game_server_status(message, 30500, 'RDR 2',  globalvariables.RDR_LOGO, False)
-
 async def update_rockstar_game_server_status(message, port, serverName, logo, addConnect):
     try:
         data = fetchData(f"http://{globalvariables.PUBLIC_ADDRESS}:{port}/info.json")

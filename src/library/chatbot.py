@@ -3,6 +3,10 @@ from chatterbot.trainers import ChatterBotCorpusTrainer
 from chatterbot.trainers import UbuntuCorpusTrainer
 import threading
 import spacy
+import logging
+
+# Configure logging to the console
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
 
 nlp = spacy.load("en_core_web_sm")
 gynchChat = ChatBot(
@@ -30,6 +34,7 @@ def trainChatBot():
     trainer.train()
 
 trainingThread = threading.Thread(target=trainChatBot, name="Trainer")
+trainingThread.daemon = True
 trainingThread.start()
 
 async def talkToGynch(message):
