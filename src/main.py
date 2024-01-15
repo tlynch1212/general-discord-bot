@@ -16,7 +16,6 @@ async def on_ready():
     update_gta_status.start()
     update_beam_status.start()
     check_for_minecraft_changes.start()
-    check_train_thread.start()
     print('Logged in as')
     print(bot.user.name)
     print(bot.user.id)
@@ -39,6 +38,17 @@ async def sync(ctx):
 @bot.tree.command(name="set-status", description='Sets my status to custom text')
 async def set_status(ctx, text: str, activity: str):
     await generalcommands.setStatus(ctx, bot, text, activity)
+
+@bot.tree.command(name="train-gynch", description='Re-Trains me. It takes a couple days')
+async def train_gynch(ctx):
+    chatbot.startTraining()
+    check_train_thread.start()
+    await ctx.response.send_message('Training has started.')
+
+@bot.tree.command(name="add-response", description='adds a response for a certain input')
+async def train_gynch(ctx, input: str, response: str):
+    chatbot.addResponse(input, response)
+    await ctx.response.send_message('Response Added.')
 
 
 @tasks.loop(minutes=5.0)
@@ -67,9 +77,11 @@ async def check_for_minecraft_changes():
     channel = bot.get_channel(globalvariables.SERVER_UPDATES_CHANNEL_ID)
     await checkforchanges.check_for_minecraft_changes(channel)
 
-@tasks.loop(hours=1.0)
+@tasks.loop(seconds=10.0)
 async def check_train_thread():
     channel = bot.get_channel(globalvariables.BOT_TESTING_CHANNEL_ID)
-    await chatbot.checkTrainingThread(channel)
+    isDone = await chatbot.isTrainingDone(channel)
+    if isDone:
+        check_train_thread.cancel()
 
 bot.run(globalvariables.TOKEN)

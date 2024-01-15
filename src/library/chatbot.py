@@ -1,7 +1,9 @@
 from chatterbot import ChatBot
 from chatterbot.trainers import ChatterBotCorpusTrainer
-from chatterbot.trainers import UbuntuCorpusTrainer
+from chatterbot.conversation import Statement
 import threading
+import asyncio
+import concurrent.futures
 import spacy
 import logging
 
@@ -15,34 +17,40 @@ gynchChat = ChatBot(
         {
             'import_path': 'chatterbot.logic.BestMatch'
         },
-        {
-            'import_path': 'chatterbot.logic.SpecificResponseAdapter',
-            'input_text': 'bbw?',
-            'output_text': 'Please, I need to know'
-        },
-        'chatterbot.logic.MathematicalEvaluation',
-        'chatterbot.logic.TimeLogicAdapter'
+        'chatterbot.logic.MathematicalEvaluation'
     ])
 
-
-
 def trainChatBot():
-    # Create a new trainer for the chatbot
-    trainer = UbuntuCorpusTrainer(gynchChat)
+    trainer = ChatterBotCorpusTrainer(gynchChat)
 
-    # Train the chatbot based on the english corpus
-    trainer.train()
+    trainer.train("chatterbot.corpus.english")
 
 trainingThread = threading.Thread(target=trainChatBot, name="Trainer")
 trainingThread.daemon = True
-trainingThread.start()
+
+def startTraining():
+    trainingThread.start()
+
+def addResponse(input, response):
+    input_statement = Statement(text=input)
+    response_statement = Statement(text=response)
+    gynchChat.learn_response(response_statement, input_statement)
+
+def getResponse(message):
+    response = gynchChat.get_response(str.lower(message.content))
+    return response
 
 async def talkToGynch(message):
     if trainingThread.isAlive():
-        await message.channel.send('Sorry, I am currently in training. It takes awhile to learn over 100 million conversations.')
+        await message.channel.send('Sorry, I am currently in training. It takes a while to learn over 100 million conversations.')
     else:
-        await message.channel.send(gynchChat.get_response(str.lower(message.content)))
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            response = await asyncio.get_event_loop().run_in_executor(executor, lambda: getResponse(message))
+            await message.channel.send(response)
 
-async def checkTrainingThread(channel):
+async def isTrainingDone(channel):
     if not trainingThread.isAlive():
         await channel.send('Training is done!')
+        return True
+    else:
+        return False
