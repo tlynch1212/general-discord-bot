@@ -31,7 +31,7 @@ async def setStatus(ctx, bot, text, activity):
 async def sendMessageAsGynch(ctx, bot, text):
     print("sendMessageAsGynch command")
     if ctx.user.id == globalvariables.OWNER_USER_ID:
-        channel = bot.get_channel(globalvariables.BOT_TESTING_CHANNEL_ID)
+        channel = bot.get_channel(globalvariables.GENERAL_CHANNEL_ID)
         await channel.send(text)
         await ctx.response.send_message('Message sent to general chat.')
     else:
