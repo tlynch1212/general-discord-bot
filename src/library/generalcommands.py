@@ -33,5 +33,6 @@ async def sendMessageAsGynch(ctx, bot, text):
     if ctx.user.id == globalvariables.OWNER_USER_ID:
         channel = bot.get_channel(globalvariables.BOT_TESTING_CHANNEL_ID)
         await channel.send(text)
+        await ctx.response.send_message('message sent to general chat.')
     else:
         await ctx.response.send_message('You must be the owner to use this command!')
