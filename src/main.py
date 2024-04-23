@@ -39,6 +39,10 @@ async def sync(ctx):
 async def set_status(ctx, text: str, activity: str):
     await generalcommands.setStatus(ctx, bot, text, activity)
 
+@bot.tree.command(name="send_message_as_gynch", description='Sends a custom message as the gynch')
+async def send_message_as_gynch(ctx, text: str):
+    await generalcommands.sendMessageAsGynch(ctx, bot, text)
+
 @bot.tree.command(name="train-gynch", description='Re-Trains me. It takes a couple days')
 async def train_gynch(ctx):
     chatbot.startTraining()

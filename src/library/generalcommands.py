@@ -26,3 +26,12 @@ async def setStatus(ctx, bot, text, activity):
             await ctx.response.send_message('Status set.')
     else:
         await ctx.response.send_message('You must be the owner to use this command!')
+
+
+async def sendMessageAsGynch(ctx, bot, text):
+    print("sendMessageAsGynch command")
+    if ctx.user.id == globalvariables.OWNER_USER_ID:
+        channel = bot.get_channel(globalvariables.BOT_TESTING_CHANNEL_ID)
+        await channel.send(text)
+    else:
+        await ctx.response.send_message('You must be the owner to use this command!')
