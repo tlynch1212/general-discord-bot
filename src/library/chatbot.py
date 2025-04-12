@@ -11,8 +11,8 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 nlp = spacy.load("en_core_web_sm")
-gynchChat = ChatBot(
-    'Gynch',
+chatBot = ChatBot(
+    'Odin',
     logic_adapters=[
         {
             'import_path': 'chatterbot.logic.BestMatch'
@@ -21,7 +21,7 @@ gynchChat = ChatBot(
     ])
 
 def trainChatBot():
-    trainer = ChatterBotCorpusTrainer(gynchChat)
+    trainer = ChatterBotCorpusTrainer(chatBot)
 
     trainer.train("chatterbot.corpus.english")
 
@@ -34,13 +34,13 @@ def startTraining():
 def addResponse(input, response):
     input_statement = Statement(text=input)
     response_statement = Statement(text=response)
-    gynchChat.learn_response(response_statement, input_statement)
+    chatBot.learn_response(response_statement, input_statement)
 
 def getResponse(message):
-    response = gynchChat.get_response(str.lower(message.content))
+    response = chatBot.get_response(str.lower(message.content))
     return response
 
-async def talkToGynch(message):
+async def talkToOdin(message):
     if trainingThread.isAlive():
         await message.channel.send('Sorry, I am currently in training. It takes a while to learn over 100 million conversations.')
     else:
